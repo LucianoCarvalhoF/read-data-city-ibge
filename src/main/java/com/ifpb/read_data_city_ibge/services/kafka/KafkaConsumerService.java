@@ -48,9 +48,14 @@ public class KafkaConsumerService {
 
     private RetryCallback<Object, RuntimeException> getObjectRuntimeExceptionRetryCallback(ConsumerRecord<String, String> record, String linkFile) {
         return context -> {
-            log.info("Attempt {} to process the link, Offset {}: {}", context.getRetryCount() + 1, record.offset(), linkFile);
+            log.info("Attempt {} to process the link. Offset: {}, Key: {}: {}",
+                    context.getRetryCount() + 1,
+                    record.offset(),
+                    record.key(),
+                    linkFile);
+
             dataProcessingService.importDrive(linkFile);
-            log.info("Processing completed successfully, Offset: {}", record.offset());
+            log.info("Processing completed successfully. Offset: {}", record.offset());
             return null;
         };
     }
