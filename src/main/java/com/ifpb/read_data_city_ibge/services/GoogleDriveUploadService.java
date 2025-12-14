@@ -22,7 +22,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 
-import java.io.InputStreamReader;
+import java.io.StringReader;
 import java.util.Collections;
 
 @Getter
@@ -30,8 +30,8 @@ import java.util.Collections;
 @Component
 @RequiredArgsConstructor
 public class GoogleDriveUploadService {
-    @Value("${google.drive.credentials.path}")
-    private String credentialsPath;
+    @Value("${google.drive.credentials}")
+    private String credentialsJson;
     @Value("${google.drive.folder.id}")
     private String folderId;
 
@@ -46,15 +46,13 @@ public class GoogleDriveUploadService {
     @PostConstruct
     @SuppressWarnings("unused")
     private void initializeDriveClient() throws Exception {
-        log.info("Initializing Google Drive client with OAuth flow. Credential path: {}", getCredentialsPath());
+        log.info("Initializing Google Drive client with OAuth flow.");
 
         final HttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
         final FileDataStoreFactory DATA_STORE_FACTORY = new FileDataStoreFactory(DATA_STORE_DIR);
 
-        GoogleClientSecrets clientSecrets;
-        try (java.io.InputStream in = resourceLoader.getResource(getCredentialsPath()).getInputStream()) {
-            clientSecrets = GoogleClientSecrets.load(JSON_FACTORY, new InputStreamReader(in));
-        }
+        StringReader credentials = new StringReader(getCredentialsJson());
+        GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY, credentials);
 
         GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(
                 HTTP_TRANSPORT,
