@@ -1,6 +1,7 @@
 package com.ifpb.read_data_city_ibge.config;
 
 import lombok.RequiredArgsConstructor;
+import org.apache.kafka.clients.producer.KafkaProducer;
 import org.springframework.boot.kafka.autoconfigure.KafkaProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,14 +14,20 @@ import java.util.Map;
 @Configuration
 @RequiredArgsConstructor
 @SuppressWarnings("unused")
-public class KafkaConsumerConfig {
+public class KafkaConfig {
 
     private final KafkaProperties kafkaProperties;
 
     @Bean
+    public KafkaProducer<String, String> kafkaProducer() {
+        Map<String, Object> configs = kafkaProperties.buildProducerProperties();
+        return new KafkaProducer<>(configs);
+    }
+
+    @Bean
     public ConsumerFactory<String, String> consumerFactory() {
-        Map<String, Object> consumerConfigurations = kafkaProperties.buildConsumerProperties();
-        return new DefaultKafkaConsumerFactory<>(consumerConfigurations);
+        Map<String, Object> configs = kafkaProperties.buildConsumerProperties();
+        return new DefaultKafkaConsumerFactory<>(configs);
     }
 
     @Bean
