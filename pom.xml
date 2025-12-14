@@ -109,6 +109,12 @@
             <artifactId>google-auth-library-oauth2-http</artifactId>
             <version>1.27.0</version>
         </dependency>
+        <!-- Heroku Env -->
+        <dependency>
+            <groupId>com.github.jkutner</groupId>
+            <artifactId>env-keystore</artifactId>
+            <version>0.1.3</version>
+        </dependency>
 
         <!-- Tests -->
         <dependency>
