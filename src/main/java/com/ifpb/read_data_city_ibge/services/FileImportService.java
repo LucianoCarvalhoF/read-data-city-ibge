@@ -19,7 +19,7 @@ import java.security.GeneralSecurityException;
 @RequiredArgsConstructor
 public class FileImportService {
 
-    private final GoogleDriveUploadService driveUploadService;
+    private final GoogleDriveService driveUploadService;
     private static final String TEMP_DIR = System.getProperty("java.io.tmpdir");
 
     public void importFileToDrive(String fileUrl) throws Exception {
