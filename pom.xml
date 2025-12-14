@@ -99,7 +99,6 @@
             <artifactId>google-http-client-jackson2</artifactId>
             <version>1.44.1</version>
         </dependency>
-
         <dependency>
             <groupId>com.google.apis</groupId>
             <artifactId>google-api-services-drive</artifactId>
@@ -110,10 +109,18 @@
             <artifactId>google-auth-library-oauth2-http</artifactId>
             <version>1.27.0</version>
         </dependency>
+
+        <!-- Tests -->
         <dependency>
-            <groupId>com.google.http-client</groupId>
-            <artifactId>google-http-client-jackson2</artifactId>
-            <version>1.44.1</version>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>6.0.1</version>
+            <scope>test</scope>
         </dependency>
 	</dependencies>
 
