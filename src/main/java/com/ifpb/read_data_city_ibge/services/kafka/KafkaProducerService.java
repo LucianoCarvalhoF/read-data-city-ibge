@@ -2,28 +2,33 @@ package com.ifpb.read_data_city_ibge.services.kafka;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.kafka.clients.producer.KafkaProducer;
-import org.apache.kafka.clients.producer.ProducerRecord;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
 
-import java.util.Objects;
+import java.util.function.BiConsumer;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class KafkaProducerService {
 
-    private final KafkaProducer<String, String> kafkaProducer;
+    private final KafkaTemplate<String, String> kafkaTemplate;
 
     public void sendMessage(String topicName, String message) {
-        ProducerRecord<String, String> record = new ProducerRecord<>(topicName, null, message);
+        kafkaTemplate.send(topicName, message).whenComplete(getSendResultThrowableBiConsumer(topicName));
+    }
 
-        kafkaProducer.send(record, (metadata, exception) -> {
-            if (Objects.isNull(exception)) {
-                log.info("Message published in topic: {}, partition: {}, offset: {}", metadata.topic(), metadata.partition(), metadata.offset());
+    private static BiConsumer<SendResult<String, String>, Throwable> getSendResultThrowableBiConsumer(String topicName) {
+        return (result, exception) -> {
+            if (exception == null) {
+                log.info("Message published in topic: {}, partition: {}, offset: {}",
+                        result.getRecordMetadata().topic(),
+                        result.getRecordMetadata().partition(),
+                        result.getRecordMetadata().offset());
             } else {
                 log.error("Posting failed for the topic {}. Exception: {}", topicName, exception.getMessage());
             }
-        });
+        };
     }
 }
